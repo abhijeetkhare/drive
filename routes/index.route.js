@@ -2,6 +2,9 @@ const express=require('express')
 const router= express.Router()
 const authMiddleware = require('../middleware/auth'); // adjust path if needed
 
+router.get('/', (req, res) => {
+  res.redirect('/user/login'); // or res.render('login') if you're not using redirection
+});
 
 
 router.get('/home',authMiddleware,async (req,res)=>{
