@@ -54,7 +54,7 @@
         <% files.forEach(file => { %>
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center bg-gray-800 p-4 rounded-md">
           <div>
-            <p class="mb-1">File Name: <strong><%= file.originalname %></strong></p>
+            <p class="mb-1">File Name: <strong><%= file.orginalname %></strong></p>
             <p>File Path: <a href="<%= file.path %>" class="text-blue-400 hover:underline break-all"><%= file.path %></a></p>
           </div>
           <div class="flex mt-3 md:mt-0 md:ml-4 space-x-2">
