@@ -1,135 +1,98 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Upload Page</title>
-    <style>
-        body { font-family: Arial, sans-serif; transition: filter 0.3s; }
-        .blurred {
-            filter: blur(5px);
-        }
-        .upload-popup {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.4);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-        .upload-content {
-            background: #fff;
-            padding: 30px 20px 20px 20px;
-            border-radius: 8px;
-            position: relative;
-            min-width: 300px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-        }
-        .close-btn {
-            position: absolute;
-            top: 10px; right: 15px;
-            background: none;
-            border: none;
-            font-size: 22px;
-            cursor: pointer;
-        }
-        .upload-btn {
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            background: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-        }
-        .upload-form-section {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            margin-top: 10px;
-        }
-    </style>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Upload Page</title>
+
+  <!-- Tailwind CSS & Flowbite -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
 </head>
-<body style="background-color: black;">
-    
-    <div style="display: flex; justify-content: space-between; align-items: center; margin: 0px;background-color: #222; margin-top: 10px;" class="backdrop-blur-sm" >
-        <div id="mainContent" style="margin: 4px;">
-            <button class="upload-btn" id="openUpload">Upload File</button>
-        </div>
-        <div>
-        <h3 style="color: #fff;">Hi <%= user.username %> 👋</h3>
-         </div>
-        <div style="margin: 10px;">
-            <form action="/logout" method="GET" style="display:inline;">
-            <button type="submit" style="background:#dc3545; color:white; padding:8px 16px; border:none; border-radius:4px; cursor:pointer;">
-             Logout
-            </button>
-            </form>
+<body class="bg-black text-white min-h-screen font-sans">
 
-        </div>
-    </div>
-    <div class="upload-popup" id="uploadPopup">
-        <form class="upload-content" action="/upload" method="POST" enctype="multipart/form-data">
-            <button class="close-btn" id="closePopup" type="button">&times;</button>
-            <h2>Upload File</h2>
-            <div class="upload-form-section">
-                <input type="file" name="file" required>
-                <button type="submit" class="upload-btn">Upload</button>
-            </div>
-        </form>
-    </div>
+  <!-- Top Nav -->
+<div class="flex flex-wrap items-center justify-between gap-2 px-4 py-3 bg-gray-900 shadow-md text-white">
+  <div>
+    <button id="openUpload" class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-md">
+      Upload File
+    </button>
+  </div>
 
-   <!-- <div id="driveFiles" style="display: flex; flex-direction: column; gap: 12px; background: #222; color: #fff; padding: 20px; border-radius: 8px; margin-top: 30px;">
-            <h3 style="margin:0 0 10px 0;">Files in Drive</h3>
-            <div style="background:#333; padding:10px; border-radius:4px;">file1.pdf</div>
-            <div style="background:#333; padding:10px; border-radius:4px;">image2.png</div>
-            <div style="background:#333; padding:10px; border-radius:4px;">notes.docx</div>
-    </div> -->
-    <div id="driveFiles" style="display: flex; flex-direction: column; gap: 12px; background: #222; color: #fff; padding: 20px; border-radius: 8px; margin-top: 30px;">
-    <h3 style="margin:0 0 10px 0;">Files in Drive</h3>
-   <% files.forEach(file => { %>
-  <div style="background:#333; padding:10px; border-radius:4px; display:flex; align-items:center; justify-content:space-between;">
-    <div>
-      <p style="margin:0;">File Name: <strong><%= file.orginalname %></strong></p>
-      <p style="margin:0;">File Path: <a href="<%= file.path %>" style="color:#4fc3f7;"><%= file.path %></a></p>
-    </div>
-    
-    <div style="display: flex; align-items: center;">
-      <a href="<%= file.path %>" target="_blank" download style="margin-left:16px; font-size: 1.5rem; display: flex; align-items: center; background:#007bff; color:#fff; border-radius:4px; text-decoration:none; padding:6px 16px;">
-        Download
-      </a>
+  <h3 class="text-lg font-semibold text-center flex-1 md:flex-none">Hi <%= user.username %> 👋</h3>
 
-      <form action="/delete" method="POST" style="margin-left:10px;">
-        <input type="hidden" name="filepath" value="<%= file.path %>">
-        <button type="submit" style="font-size: 1.5rem; background:#dc3545; color:#fff; border:none; border-radius:4px; padding:6px 16px; cursor:pointer;">
-          Delete
+  <form action="/logout" method="GET">
+    <button class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md">
+      Logout
+    </button>
+  </form>
+</div>
+
+
+  <!-- Upload Modal -->
+  <div id="uploadPopup" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[100vh] flex justify-center items-center bg-black bg-opacity-50 backdrop-blur-sm">
+    <div class="relative w-full max-w-md">
+      <form action="/upload" method="POST" enctype="multipart/form-data" class="relative bg-white rounded-lg shadow p-6 text-black">
+        <button type="button" id="closePopup" class="absolute top-3 right-3 text-gray-600 hover:text-red-500 text-xl">
+          &times;
+        </button>
+        <h3 class="text-xl font-semibold mb-4">Upload File</h3>
+        <input type="file" name="file" required class="block w-full text-sm text-gray-700 bg-gray-100 border border-gray-300 rounded-md mb-4 p-2">
+        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md">
+          Upload
         </button>
       </form>
     </div>
   </div>
-<% }); %>
 
-    <script>
-        const openBtn = document.getElementById('openUpload');
-        const popup = document.getElementById('uploadPopup');
-        const closeBtn = document.getElementById('closePopup');
-        const mainContent = document.getElementById('mainContent');
+  <!-- Files List -->
+  <div class="p-4 md:p-8">
+    <div class="bg-gray-900 p-6 rounded-md shadow-md">
+      <h3 class="text-xl font-semibold mb-4">Files in Drive</h3>
+      <div class="space-y-4">
+        <% files.forEach(file => { %>
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center bg-gray-800 p-4 rounded-md">
+          <div>
+            <p class="mb-1">File Name: <strong><%= file.originalname %></strong></p>
+            <p>File Path: <a href="<%= file.path %>" class="text-blue-400 hover:underline break-all"><%= file.path %></a></p>
+          </div>
+          <div class="flex mt-3 md:mt-0 md:ml-4 space-x-2">
+            <a href="<%= file.path %>" download target="_blank" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm">
+              Download
+            </a>
+            <form action="/delete" method="POST">
+              <input type="hidden" name="filepath" value="<%= file.path %>" />
+              <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm">
+                Delete
+              </button>
+            </form>
+          </div>
+        </div>
+        <% }); %>
+      </div>
+    </div>
+  </div>
 
-        openBtn.onclick = () => {
-            popup.style.display = 'flex';
-            mainContent.classList.add('blurred');
-        };
-        closeBtn.onclick = () => {
-            popup.style.display = 'none';
-            mainContent.classList.remove('blurred');
-        };
-        window.onclick = (e) => {
-            if (e.target === popup) {
-                popup.style.display = 'none';
-                mainContent.classList.remove('blurred');
-            }
-        };
-    </script>
+  <!-- Modal Script -->
+  <script>
+    const openBtn = document.getElementById('openUpload');
+    const closeBtn = document.getElementById('closePopup');
+    const popup = document.getElementById('uploadPopup');
+
+    openBtn.addEventListener('click', () => {
+      popup.classList.remove('hidden');
+    });
+
+    closeBtn.addEventListener('click', () => {
+      popup.classList.add('hidden');
+    });
+
+    window.addEventListener('click', (e) => {
+      if (e.target === popup) {
+        popup.classList.add('hidden');
+      }
+    });
+  </script>
 </body>
 </html>
